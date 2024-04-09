@@ -56,5 +56,6 @@ Deliverables 4pts
 
 Notes : 
 
-All deliverables mut be in the Github/Azure Devops/ Jira Board (this is your final report) with all the 
+All deliverables mut be in the Github/Azure Devops/ Jira Board (this is your final report) with all the all the tasks you have executed including a readme that explain the project. 
+
 
