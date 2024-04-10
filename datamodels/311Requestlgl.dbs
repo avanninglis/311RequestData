@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="311Request_lgl" id="LogicalDesign-26ad" database="LogicalDesign" >
+	<schema name="INSTANCE" catalogname="311Request_lgl" >
+		<table name="Entity" />
+		<table name="Fact_Table" prior="Fact_Tabe" >
+			<column name="unique_key" type="BIGINT" jt="-5" mandatory="y" />
+			<column name="Incident_address" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<column name="complainttype_id" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<column name="createddate_id" type="DATE" jt="91" mandatory="y" />
+			<index name="pk_Fact_Table" unique="PRIMARY_KEY" >
+				<column name="unique_key" />
+			</index>
+			<index name="unq_Incident_address" unique="UNIQUE_INDEX" >
+				<column name="Incident_address" />
+			</index>
+			<index name="unq_complainttype_id" unique="UNIQUE_INDEX" >
+				<column name="complainttype_id" />
+			</index>
+			<fk name="fk_Fact_Table_dim_Location" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_Location" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="Incident_address" pk="Incidentaddress_Id" />
+			</fk>
+			<fk name="fk_Fact_Table_dim_complaint" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_complaint" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="complainttype_id" pk="complainttype_id" />
+			</fk>
+			<fk name="fk_Fact_Table_dim_date" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_date" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="createddate_id" pk="created_date" />
+			</fk>
+		</table>
+		<table name="dim_Location" prior="dim_LoEntity" >
+			<column name="Incidentaddress_Id" prior="Incident Address" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<index name="pk_dim_Location" unique="PRIMARY_KEY" >
+				<column name="Incidentaddress_Id" />
+			</index>
+		</table>
+		<table name="dim_complaint" prior="dim_" >
+			<column name="complainttype_id" type="INT" jt="4" mandatory="y" />
+			<index name="pk_dim_complaint" unique="PRIMARY_KEY" >
+				<column name="complainttype_id" />
+			</index>
+		</table>
+		<table name="dim_date" prior="dim_daey" >
+			<column name="created_date" type="DATE" jt="91" mandatory="y" />
+			<index name="pk_dim_date" unique="PRIMARY_KEY" >
+				<column name="created_date" />
+			</index>
+		</table>
+	</schema>
+	<layout name="311Dim" id="Layout-665" show_relation="columns" >
+		<entity schema="311Request_lgl.INSTANCE" name="Fact_Table" color="C1D8EE" x="391" y="153" />
+		<entity schema="311Request_lgl.INSTANCE" name="dim_Location" color="C1D8EE" x="51" y="187" />
+		<entity schema="311Request_lgl.INSTANCE" name="dim_complaint" color="C1D8EE" x="646" y="238" />
+		<entity schema="311Request_lgl.INSTANCE" name="dim_date" color="C1D8EE" x="306" y="408" />
+		<callout x="85" y="51" pointer="Round" >
+			<comment><![CDATA[This is a layout - a diagram with tools.
+- Right-click the layout to create new tables. 
+- Double-click table headers to edit. 
+- For a better understanding of the schema, create multiple layouts.
+- Save the design to the model file, and deploy from 'Schema / Create into the database'.]]></comment>
+		</callout>
+	</layout>
+</project>
