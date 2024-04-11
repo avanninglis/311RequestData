@@ -5,8 +5,17 @@
 		<table name="Fact_Table" prior="Fact_Tabe" >
 			<column name="unique_key" type="BIGINT" jt="-5" mandatory="y" />
 			<column name="Incident_address" type="VARCHAR" length="100" jt="12" mandatory="y" />
-			<column name="complainttype_id" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<column name="complaintType_id" prior="complainttype_id" type="INT" jt="4" mandatory="y" />
 			<column name="createddate_id" type="DATE" jt="91" mandatory="y" />
+			<column name="agency_id" type="VARCHAR" jt="12" mandatory="y" />
+			<column name="closeddate_id" type="DATE" jt="91" />
+			<column name="due_date_id" type="INT" jt="4" mandatory="y" >
+				<comment><![CDATA[Date when responding agency is expected to update the SR.  This is based on the Complaint Type and internal Service Level Agreements (SLAs).]]></comment>
+			</column>
+			<column name="resolution_action_updated_Date" type="DATE" jt="91" >
+				<comment><![CDATA[Date when responding agency is expected to update the service request. This is based on the Complaint Type and internal Service Level Agreements (SLAs) between 311 and the responding Agency.]]></comment>
+			</column>
+			<column name="open_data_channel_type" type="INT" jt="4" />
 			<index name="pk_Fact_Table" unique="PRIMARY_KEY" >
 				<column name="unique_key" />
 			</index>
@@ -14,41 +23,90 @@
 				<column name="Incident_address" />
 			</index>
 			<index name="unq_complainttype_id" unique="UNIQUE_INDEX" >
-				<column name="complainttype_id" />
+				<column name="complaintType_id" />
 			</index>
 			<fk name="fk_Fact_Table_dim_Location" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_Location" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
-				<fk_column name="Incident_address" pk="Incidentaddress_Id" />
+				<fk_column name="Incident_address" pk="IncidentAddress_Id" />
 			</fk>
 			<fk name="fk_Fact_Table_dim_complaint" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_complaint" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
-				<fk_column name="complainttype_id" pk="complainttype_id" />
+				<fk_column name="complaintType_id" pk="complaintType_id" />
 			</fk>
 			<fk name="fk_Fact_Table_dim_date" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_date" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
-				<fk_column name="createddate_id" pk="created_date" />
+				<fk_column name="createddate_id" pk="date_id" />
+			</fk>
+			<fk name="fk_Fact_Table_dim_agency" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_agency" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="agency_id" pk="agency" />
+			</fk>
+			<fk name="fk_Fact_Table_dim_date_0" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_date" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="createddate_id" pk="date_id" />
+			</fk>
+			<fk name="fk_Fact_Table_dim_date_1" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_date" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="due_date_id" pk="date_id" />
 			</fk>
 		</table>
 		<table name="dim_Location" prior="dim_LoEntity" >
-			<column name="Incidentaddress_Id" prior="Incident Address" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<column name="IncidentAddress_Id" prior="Incidentaddress_Id" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<column name="longitude" type="DECIMAL" jt="3" />
+			<column name="latitude" type="DECIMAL" jt="3" />
+			<column name="borough" type="VARCHAR" jt="12" />
+			<column name="zipcode" type="INT" jt="4" />
+			<column name="cross_street1" type="VARCHAR" length="100" jt="12" />
+			<column name="cross_street2" type="VARCHAR" length="100" jt="12" />
+			<column name="intersection_street 1" type="VARCHAR" jt="12" />
+			<column name="intersection_street 2" type="VARCHAR" length="100" jt="12" />
+			<column name="city" type="VARCHAR" jt="12" />
+			<column name="landmark" type="VARCHAR" jt="12" />
+			<column name="bbl" type="INT" jt="4" >
+				<comment><![CDATA[Parcel number that identifies the location of the building or property associated with the service request. The block is a subset of a borough. The lot is a subset of a block unique within a borough and block.]]></comment>
+			</column>
+			<column name="X_Coordinate" type="INT" jt="4" />
+			<column name="YCoordinate" type="INT" jt="4" />
 			<index name="pk_dim_Location" unique="PRIMARY_KEY" >
-				<column name="Incidentaddress_Id" />
+				<column name="IncidentAddress_Id" />
+			</index>
+		</table>
+		<table name="dim_agency" prior="Entity_0" >
+			<column name="agency" prior="agency_name" type="VARCHAR" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[Acronym of responding City Government Agency or entity responding to 311 Service Request.]]></comment>
+			</column>
+			<column name="agency_names" type="VARCHAR" length="100" jt="12" >
+				<comment><![CDATA[Full agency name of responding City Government Agency, or entity responding to 311 service request.]]></comment>
+			</column>
+			<column name="communityboard" type="VARCHAR" jt="12" />
+			<index name="pk_dim_agency" unique="PRIMARY_KEY" >
+				<column name="agency" />
 			</index>
 		</table>
 		<table name="dim_complaint" prior="dim_" >
-			<column name="complainttype_id" type="INT" jt="4" mandatory="y" />
+			<column name="complaintType_id" prior="complainttype_id" type="INT" jt="4" mandatory="y" />
+			<column name="Descriptor" type="VARCHAR" length="500" jt="12" />
+			<column name="resolution_description" type="VARCHAR" length="500" jt="12" />
 			<index name="pk_dim_complaint" unique="PRIMARY_KEY" >
-				<column name="complainttype_id" />
+				<column name="complaintType_id" />
 			</index>
 		</table>
 		<table name="dim_date" prior="dim_daey" >
-			<column name="created_date" type="DATE" jt="91" mandatory="y" />
+			<column name="date_id" prior="created_date" type="INT" jt="4" mandatory="y" />
+			<column name="date_original_format" prior="date_origignal_format" type="VARCHAR" length="100" jt="12" />
+			<column name="date_iso_format" type="DATE" jt="91" />
+			<column name="year" type="INT" jt="4" />
+			<column name="month" type="INT" jt="4" />
+			<column name="day_number" type="INT" jt="4" />
+			<column name="hour_number" type="INT" jt="4" />
+			<column name="minute" type="INT" jt="4" />
+			<column name="seconds" type="INT" jt="4" />
+			<column name="day_name" type="VARCHAR" length="100" jt="12" />
+			<column name="weekofYEar" type="VARCHAR" length="100" jt="12" />
 			<index name="pk_dim_date" unique="PRIMARY_KEY" >
-				<column name="created_date" />
+				<column name="date_id" />
 			</index>
 		</table>
 	</schema>
 	<layout name="311Dim" id="Layout-665" show_relation="columns" >
 		<entity schema="311Request_lgl.INSTANCE" name="Fact_Table" color="C1D8EE" x="391" y="153" />
 		<entity schema="311Request_lgl.INSTANCE" name="dim_Location" color="C1D8EE" x="51" y="187" />
-		<entity schema="311Request_lgl.INSTANCE" name="dim_complaint" color="C1D8EE" x="646" y="238" />
+		<entity schema="311Request_lgl.INSTANCE" name="dim_agency" color="C1D8EE" x="629" y="408" />
+		<entity schema="311Request_lgl.INSTANCE" name="dim_complaint" color="C1D8EE" x="680" y="187" />
 		<entity schema="311Request_lgl.INSTANCE" name="dim_date" color="C1D8EE" x="306" y="408" />
 		<callout x="85" y="51" pointer="Round" >
 			<comment><![CDATA[This is a layout - a diagram with tools.
