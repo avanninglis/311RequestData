@@ -16,6 +16,7 @@
 				<comment><![CDATA[Date when responding agency is expected to update the service request. This is based on the Complaint Type and internal Service Level Agreements (SLAs) between 311 and the responding Agency.]]></comment>
 			</column>
 			<column name="open_data_channel_type" type="INT" jt="4" />
+			<column name="locationtype" type="VARCHAR" jt="12" mandatory="y" />
 			<index name="pk_Fact_Table" unique="PRIMARY_KEY" >
 				<column name="unique_key" />
 			</index>
@@ -43,6 +44,9 @@
 			<fk name="fk_Fact_Table_dim_date_1" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_date" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
 				<fk_column name="due_date_id" pk="date_id" />
 			</fk>
+			<fk name="fk_Fact_Table_dim_Location_0" virtual="y" to_schema="311Request_lgl.INSTANCE" to_table="dim_Location" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="locationtype" pk="locationtype_id" />
+			</fk>
 		</table>
 		<table name="dim_Location" prior="dim_LoEntity" >
 			<column name="IncidentAddress_Id" prior="Incidentaddress_Id" type="VARCHAR" length="100" jt="12" mandatory="y" />
@@ -61,8 +65,12 @@
 			</column>
 			<column name="X_Coordinate" type="INT" jt="4" />
 			<column name="YCoordinate" type="INT" jt="4" />
+			<column name="locationtype_id" type="VARCHAR" length="500" jt="12" />
 			<index name="pk_dim_Location" unique="PRIMARY_KEY" >
 				<column name="IncidentAddress_Id" />
+			</index>
+			<index name="unq_locationtype_id" unique="UNIQUE_INDEX" >
+				<column name="locationtype_id" />
 			</index>
 		</table>
 		<table name="dim_agency" prior="Entity_0" >
