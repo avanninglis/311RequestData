@@ -10,7 +10,7 @@ WITH date_cte AS
     UNION
     SELECT DISTINCT CAST (resolution_action_updated_date AS timestamp)  AS date_value FROM public.raw2
     UNION
-    SELECT DISTINCT CAST (closed_date AS timestamp)  AS date_value FROM public.raw2
+    SELECT DISTINCT CAST  (closed_date AS timestamp)  AS date_value FROM public.raw2
     UNION
     SELECT DISTINCT CAST (due_date AS timestamp)  AS date_value FROM public.raw2
 )
